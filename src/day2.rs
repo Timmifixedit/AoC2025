@@ -23,6 +23,31 @@ fn is_doubled(id: &str) -> bool {
     left == right
 }
 
+fn repeats(id: &str) -> bool {
+    let len = id.len();
+    let mut divisor = 1;
+    while divisor <= len / 2 {
+        if len % divisor == 0 {
+            let mut ok = true;
+            let seq = &id[..divisor];
+            for pos in 1..len / divisor {
+                if seq != &id[pos * divisor..(pos + 1) * divisor] {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if ok {
+                return true;
+            }
+        }
+
+        divisor += 1;
+    }
+
+    false
+}
+
 impl Day2 {
     pub fn new(input: &str) -> Result<Self, AoCError> {
         let re = Regex::new(r"((?<s>\d+)-(?<e>\d+))").unwrap();
@@ -65,6 +90,6 @@ impl Day for Day2 {
     }
 
     fn part_2(&self) -> Result<Res, AoCError> {
-        todo!()
+        self.calc_sum_invalid(repeats)
     }
 }
