@@ -1,5 +1,5 @@
 use crate::day::AoCError::ParseError;
-use crate::day::{AoCError, Day};
+use crate::day::{AoCError, Day, Res};
 
 #[derive(Debug)]
 struct Rotation {
@@ -50,8 +50,8 @@ impl Day1 {
 }
 
 impl Day for Day1 {
-    fn part_1(&self) -> Result<u32, AoCError> {
-        let mut n_zeros = 0u32;
+    fn part_1(&self) -> Result<Res, AoCError> {
+        let mut n_zeros = 0 as Res;
         let mut state = 50u8;
         for r in &self.rotations {
             state = if r.increasing {
@@ -60,21 +60,21 @@ impl Day for Day1 {
                 wrap_sub(state, r.steps)
             };
 
-            n_zeros += (state == 0) as u32;
+            n_zeros += (state == 0) as Res;
         }
         Ok(n_zeros)
     }
 
-    fn part_2(&self) -> Result<u32, AoCError> {
-        let mut n_zeros = 0u32;
+    fn part_2(&self) -> Result<u64, AoCError> {
+        let mut n_zeros = 0 as Res;
         let mut state = 50u8;
         for r in &self.rotations {
-            n_zeros += r.steps / 100;
+            n_zeros += (r.steps / 100) as Res;
             state = if r.increasing {
-                n_zeros += (state as u32 + r.steps % 100 >= 100) as u32;
+                n_zeros += (state as u32 + r.steps % 100 >= 100) as Res;
                 wrap_add(state, r.steps)
             } else {
-                n_zeros += (state != 0 && r.steps % 100 >= state as u32) as u32;
+                n_zeros += (state != 0 && r.steps % 100 >= state as u32) as Res;
                 wrap_sub(state, r.steps)
             };
 

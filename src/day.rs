@@ -24,9 +24,11 @@ pub enum AoCError {
     InputError(String),
 }
 
+pub type Res = u64;
+
 pub trait Day {
-    fn part_1(&self) -> Result<u32, AoCError>;
-    fn part_2(&self) -> Result<u32, AoCError>;
+    fn part_1(&self) -> Result<Res, AoCError>;
+    fn part_2(&self) -> Result<Res, AoCError>;
 }
 
 pub fn instantiate(day: NonZero<u8>, test_instance: bool) -> Result<Box<dyn Day>, AoCError> {
