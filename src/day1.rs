@@ -66,6 +66,19 @@ impl Day for Day1 {
     }
 
     fn part_2(&self) -> Result<u32, AoCError> {
-        todo!()
+        let mut n_zeros = 0u32;
+        let mut state = 50u8;
+        for r in &self.rotations {
+            n_zeros += r.steps / 100;
+            state = if r.increasing {
+                n_zeros += (state as u32 + r.steps % 100 >= 100) as u32;
+                wrap_add(state, r.steps)
+            } else {
+                n_zeros += (state != 0 && r.steps % 100 >= state as u32) as u32;
+                wrap_sub(state, r.steps)
+            };
+
+        }
+        Ok(n_zeros)
     }
 }
