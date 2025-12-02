@@ -4,11 +4,20 @@ use crate::day::{AoCError, Day};
 #[derive(Debug)]
 struct Rotation {
     increasing: bool,
-    steps: u16,
+    steps: u32,
 }
 
 pub struct Day1 {
     rotations: Vec<Rotation>,
+}
+
+fn wrap_add(n: u8, incr: u32) -> u8 {
+    ((n as u32 + incr) % 100) as u8
+}
+
+fn wrap_sub(n: u8, decr: u32) -> u8 {
+    let decr = (decr % 100) as u8;
+    if decr > n { 100 + n - decr } else { n - decr }
 }
 
 impl Day1 {
@@ -31,7 +40,7 @@ impl Day1 {
                 .chars()
                 .skip(1)
                 .collect::<String>()
-                .parse::<u16>()
+                .parse::<u32>()
                 .map_err(|e| parse_error(e.to_string()))?;
             rotations.push(Rotation { increasing, steps })
         }
@@ -42,8 +51,18 @@ impl Day1 {
 
 impl Day for Day1 {
     fn part_1(&self) -> Result<u32, AoCError> {
-        println!("rotations: {:?}", self.rotations);
-        Ok(0)
+        let mut n_zeros = 0u32;
+        let mut state = 50u8;
+        for r in &self.rotations {
+            state = if r.increasing {
+                wrap_add(state, r.steps)
+            } else {
+                wrap_sub(state, r.steps)
+            };
+
+            n_zeros += (state == 0) as u32;
+        }
+        Ok(n_zeros)
     }
 
     fn part_2(&self) -> Result<u32, AoCError> {
