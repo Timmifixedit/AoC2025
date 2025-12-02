@@ -1,5 +1,6 @@
 mod day;
 mod day1;
+mod day2;
 
 use crate::day::AoCError;
 use std::num::NonZero;

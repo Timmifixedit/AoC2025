@@ -2,9 +2,16 @@ use crate::day::AoCError::{DayError, DayNotImplemented, ParseError};
 use crate::day1::Day1;
 use std::num::NonZero;
 use thiserror::Error;
+use crate::day2::Day2;
 
-const INPUTS: &[&'static str] = &[include_str!("../inputs/day1.txt")];
-const TEST_INPUTS: &[&'static str] = &[include_str!("../tests/day1.txt")];
+const INPUTS: &[&'static str] = &[
+    include_str!("../inputs/day1.txt"),
+    include_str!("../inputs/day2.txt"),
+];
+const TEST_INPUTS: &[&'static str] = &[
+    include_str!("../tests/day1.txt"),
+    include_str!("../tests/day2.txt"),
+];
 
 const fn min(a: usize, b: usize) -> usize {
     if a < b { a } else { b }
@@ -46,6 +53,7 @@ pub fn instantiate(day: NonZero<u8>, test_instance: bool) -> Result<Box<dyn Day>
 
     match day {
         1 => Ok(Box::new(Day1::new(data)?)),
+        2 => Ok(Box::new(Day2::new(data)?)),
         _ => Err(DayNotImplemented(day)),
     }
 }
