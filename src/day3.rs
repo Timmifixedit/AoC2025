@@ -61,21 +61,25 @@ impl Day3 {
 
         Ok(Self { banks })
     }
-}
 
-impl Day for Day3 {
-    fn part_1(&self) -> Result<Res, AoCError> {
+    fn sum_joltage(&self, num_batteries: usize) -> Result<Res, AoCError> {
         let mut joltage_sum = 0;
         for bank in &self.banks {
-            let j = joltage(bank, 2)?;
+            let j = joltage(bank, num_batteries)?;
             println!("{:?} -> {}", bank, j);
             joltage_sum += j;
         }
 
         Ok(joltage_sum)
     }
+}
+
+impl Day for Day3 {
+    fn part_1(&self) -> Result<Res, AoCError> {
+        self.sum_joltage(2)
+    }
 
     fn part_2(&self) -> Result<Res, AoCError> {
-        todo!()
+        self.sum_joltage(12)
     }
 }
