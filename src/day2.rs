@@ -1,11 +1,11 @@
 use crate::day::AoCError::ParseError;
-use crate::day::{AoCError, Day, Res};
+use crate::day::{AoCError, Day, Int, Res};
 use regex::Regex;
 
 #[derive(Debug)]
 struct IdRange {
-    start: Res,
-    end: Res,
+    start: Int,
+    end: Int,
 }
 
 pub struct Day2 {
@@ -59,10 +59,10 @@ impl Day2 {
                 .captures(idr)
                 .ok_or(parse_error("no regex match".to_string()))?;
             let start = range["s"]
-                .parse::<Res>()
+                .parse::<Int>()
                 .map_err(|e| parse_error(e.to_string()))?;
             let end = range["e"]
-                .parse::<Res>()
+                .parse::<Int>()
                 .map_err(|e| parse_error(e.to_string()))?;
             ids.push(IdRange { start, end });
         }
@@ -70,12 +70,12 @@ impl Day2 {
         Ok(Self { ids })
     }
 
-    fn calc_sum_invalid(&self, predicate: fn(&str) -> bool) -> Result<Res, AoCError> {
-        let mut sum_invalid = 0 as Res;
+    fn calc_sum_invalid(&self, predicate: fn(&str) -> bool) -> Res {
+        let mut sum_invalid = 0 as Int;
         for id_range in &self.ids {
             for id in id_range.start..id_range.end + 1 {
                 if predicate(&id.to_string()) {
-                    sum_invalid += id as Res;
+                    sum_invalid += id as Int;
                 }
             }
         }
@@ -85,11 +85,11 @@ impl Day2 {
 }
 
 impl Day for Day2 {
-    fn part_1(&self) -> Result<Res, AoCError> {
+    fn part_1(&self) -> Res {
         self.calc_sum_invalid(is_doubled)
     }
 
-    fn part_2(&self) -> Result<Res, AoCError> {
+    fn part_2(&self) -> Res {
         self.calc_sum_invalid(repeats)
     }
 }

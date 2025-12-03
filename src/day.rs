@@ -1,9 +1,9 @@
-use crate::day::AoCError::{DayError, DayNotImplemented, ParseError};
+use crate::day::AoCError::{DayError, DayNotImplemented};
 use crate::day1::Day1;
-use std::num::NonZero;
-use thiserror::Error;
 use crate::day2::Day2;
 use crate::day3::Day3;
+use std::num::NonZero;
+use thiserror::Error;
 
 const INPUTS: &[&'static str] = &[
     include_str!("../inputs/day1.txt"),
@@ -34,11 +34,12 @@ pub enum AoCError {
     LogicError(String)
 }
 
-pub type Res = u64;
+pub type Int = u64;
+pub type Res = Result<Int, AoCError>;
 
 pub trait Day {
-    fn part_1(&self) -> Result<Res, AoCError>;
-    fn part_2(&self) -> Result<Res, AoCError>;
+    fn part_1(&self) -> Res;
+    fn part_2(&self) -> Res;
 }
 
 pub fn instantiate(day: NonZero<u8>, test_instance: bool) -> Result<Box<dyn Day>, AoCError> {

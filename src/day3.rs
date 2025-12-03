@@ -28,7 +28,7 @@ fn joltage_rec(bank: &[u8], mut top: Vec<u8>, num_batteries: usize) -> Vec<u8> {
     joltage_rec(&bank[idx + 1..], top, num_batteries - 1)
 }
 
-fn joltage(bank: &Vec<u8>, num_batteries: usize) -> Result<Res, AoCError> {
+fn joltage(bank: &Vec<u8>, num_batteries: usize) -> Res {
     if bank.len() < num_batteries {
         return Err(LogicError(format!(
             "cannot chose {} batteries from bank of size {}",
@@ -62,7 +62,7 @@ impl Day3 {
         Ok(Self { banks })
     }
 
-    fn sum_joltage(&self, num_batteries: usize) -> Result<Res, AoCError> {
+    fn sum_joltage(&self, num_batteries: usize) -> Res {
         let mut joltage_sum = 0;
         for bank in &self.banks {
             let j = joltage(bank, num_batteries)?;
@@ -75,11 +75,11 @@ impl Day3 {
 }
 
 impl Day for Day3 {
-    fn part_1(&self) -> Result<Res, AoCError> {
+    fn part_1(&self) -> Res {
         self.sum_joltage(2)
     }
 
-    fn part_2(&self) -> Result<Res, AoCError> {
+    fn part_2(&self) -> Res {
         self.sum_joltage(12)
     }
 }
