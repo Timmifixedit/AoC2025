@@ -3,14 +3,17 @@ use crate::day1::Day1;
 use std::num::NonZero;
 use thiserror::Error;
 use crate::day2::Day2;
+use crate::day3::Day3;
 
 const INPUTS: &[&'static str] = &[
     include_str!("../inputs/day1.txt"),
     include_str!("../inputs/day2.txt"),
+    include_str!("../inputs/day3.txt"),
 ];
 const TEST_INPUTS: &[&'static str] = &[
     include_str!("../tests/day1.txt"),
     include_str!("../tests/day2.txt"),
+    include_str!("../tests/day3.txt"),
 ];
 
 const fn min(a: usize, b: usize) -> usize {
@@ -27,8 +30,8 @@ pub enum AoCError {
     DayError(u8),
     #[error("Day {0} not implemented yet")]
     DayNotImplemented(u8),
-    #[error("Input error: {0}")]
-    InputError(String),
+    #[error("Logic error: {0}")]
+    LogicError(String)
 }
 
 pub type Res = u64;
@@ -54,6 +57,7 @@ pub fn instantiate(day: NonZero<u8>, test_instance: bool) -> Result<Box<dyn Day>
     match day {
         1 => Ok(Box::new(Day1::new(data)?)),
         2 => Ok(Box::new(Day2::new(data)?)),
+        3 => Ok(Box::new(Day3::new(data)?)),
         _ => Err(DayNotImplemented(day)),
     }
 }
