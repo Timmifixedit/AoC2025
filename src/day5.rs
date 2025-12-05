@@ -1,6 +1,7 @@
 use crate::day::{AoCError, Day, Int, Res};
+use std::cmp::max;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Range {
     start: usize,
     end: usize,
@@ -28,6 +29,10 @@ impl Range {
 
     fn contains(&self, x: usize) -> bool {
         x >= self.start && x <= self.end
+    }
+
+    fn len(&self) -> usize {
+        self.end - self.start + 1
     }
 }
 
@@ -74,6 +79,18 @@ impl Day for Day5 {
     }
 
     fn part_2(&self) -> Res {
-        todo!()
+        let mut fresh = self.fresh.clone();
+        fresh.sort_unstable_by_key(|r| r.start);
+        let mut concatenated: Vec<Range> = Vec::new();
+        for r in fresh {
+            if concatenated.is_empty() || concatenated.last().unwrap().end < r.start {
+                concatenated.push(r);
+            } else {
+                let last = concatenated.last_mut().unwrap();
+                last.end = max(last.end, r.end);
+            }
+        }
+
+        Ok(concatenated.iter().fold(0, |acc, r| acc + r.len()) as Int)
     }
 }
