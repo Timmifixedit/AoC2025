@@ -1,6 +1,7 @@
 use crate::day::{AoCError, Day, Int, Res};
 use distances::vectors::euclidean;
 use nalgebra::Point3;
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
 
@@ -37,12 +38,14 @@ impl JunctionBox {
 
 struct DisjointSet {
     parent: Vec<usize>,
+    num_sets: usize,
 }
 
 impl DisjointSet {
     fn new(num_entries: usize) -> Self {
         Self {
             parent: (0..num_entries).collect(),
+            num_sets: num_entries,
         }
     }
 
@@ -66,6 +69,10 @@ impl DisjointSet {
         let rep1 = self.representative(elem1)?;
         let rep2 = self.representative(elem2)?;
         self.parent[rep1] = rep2;
+        if rep1 != rep2 {
+            self.num_sets -= 1;
+        }
+
         Ok(())
     }
 }
@@ -87,21 +94,33 @@ impl Day8 {
             junction_boxes.push(JunctionBox::new(&parts, idx - 1).map_err(|e| err(e.to_string()))?);
         }
 
-        Ok(Self { junction_boxes })
+        if junction_boxes.is_empty() {
+            Err(AoCError::ParseError("no junction boxes found".to_string()))
+        } else {
+            Ok(Self { junction_boxes })
+        }
     }
+}
+
+fn sorted_cartesian<T, C>(items: &[T], cmp: C) -> Vec<(&T, &T)>
+where
+    C: Fn(&(&T, &T), &(&T, &T)) -> Ordering,
+{
+    let mut ret: Vec<(&T, &T)> = Vec::with_capacity(items.len() * (items.len() - 1) / 2);
+    for (idx, i) in items.iter().enumerate() {
+        for j in items.iter().skip(idx + 1) {
+            ret.push((i, j));
+        }
+    }
+    ret.sort_unstable_by(cmp);
+    ret
 }
 
 impl Day for Day8 {
     fn part_1(&self) -> Res {
-        let mut cartesian: Vec<(&JunctionBox, &JunctionBox)> =
-            Vec::with_capacity(self.junction_boxes.len() * (self.junction_boxes.len() - 1) / 2);
-        for (i, j1) in self.junction_boxes.iter().enumerate() {
-            for j2 in self.junction_boxes.iter().skip(i + 1) {
-                cartesian.push((j1, j2));
-            }
-        }
-
-        cartesian.sort_unstable_by(|&p1, &p2| p1.0.distance(p1.1).total_cmp(&p2.0.distance(p2.1)));
+        let cartesian = sorted_cartesian(&self.junction_boxes, |p1, p2| {
+            p1.0.distance(p1.1).total_cmp(&p2.0.distance(p2.1))
+        });
         let mut circuits = DisjointSet::new(self.junction_boxes.len());
         for (j1, j2) in cartesian.into_iter().take(1000) {
             circuits.merge(j1.id, j2.id)?;
@@ -118,6 +137,20 @@ impl Day for Day8 {
     }
 
     fn part_2(&self) -> Res {
-        todo!()
+        let cartesian = sorted_cartesian(&self.junction_boxes, |p1, p2| {
+            p1.0.distance(p1.1).total_cmp(&p2.0.distance(p2.1))
+        });
+        let mut circuits = DisjointSet::new(self.junction_boxes.len());
+        let mut last_connection = *cartesian.first().unwrap();
+        for (j1, j2) in cartesian {
+            circuits.merge(j1.id, j2.id)?;
+            if circuits.num_sets == 1 {
+                last_connection = (j1, j2);
+                break;
+            }
+        }
+
+        println!("last connection: {:?}", last_connection);
+        Ok(last_connection.0.pos.x * last_connection.1.pos.x)
     }
 }
