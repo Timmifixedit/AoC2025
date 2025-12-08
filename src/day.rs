@@ -8,6 +8,7 @@ use crate::day4::Day4;
 use crate::day5::Day5;
 use crate::day6::Day6;
 use crate::day7::Day7;
+use crate::day8::Day8;
 
 const INPUTS: &[&'static str] = &[
     include_str!("../inputs/day1.txt"),
@@ -17,6 +18,7 @@ const INPUTS: &[&'static str] = &[
     include_str!("../inputs/day5.txt"),
     include_str!("../inputs/day6.txt"),
     include_str!("../inputs/day7.txt"),
+    include_str!("../inputs/day8.txt"),
 ];
 const TEST_INPUTS: &[&'static str] = &[
     include_str!("../tests/day1.txt"),
@@ -26,6 +28,7 @@ const TEST_INPUTS: &[&'static str] = &[
     include_str!("../tests/day5.txt"),
     include_str!("../tests/day6.txt"),
     include_str!("../tests/day7.txt"),
+    include_str!("../tests/day8.txt"),
 ];
 
 const fn min(a: usize, b: usize) -> usize {
@@ -75,6 +78,7 @@ pub fn instantiate(day: NonZero<u8>, test_instance: bool) -> Result<Box<dyn Day>
         5 => Ok(Box::new(Day5::new(data)?)),
         6 => Ok(Box::new(Day6::new(data)?)),
         7 => Ok(Box::new(Day7::new(data)?)),
+        8 => Ok(Box::new(Day8::new(data)?)),
         _ => Err(DayNotImplemented(day)),
     }
 }
